@@ -1,5 +1,5 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/user.controllers");
+const controller = require("../controllers/item.controller");
 
 module.exports = (app) => {
   app.use((req, res, next) => {
@@ -10,6 +10,5 @@ module.exports = (app) => {
     next();
   });
 
-  app.post("/api/user", controller.getUserByEmail);
-  app.put("/api/user", [authJwt.verifyToken], controller.updateUserPassword);
+  app.get("/api/item", controller.getItems);
 };

@@ -1,15 +1,21 @@
-module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define('users', {
-    username: {
-      type: Sequelize.STRING,
-    },
+const { DataTypes } = require("sequelize");
+
+module.exports = (sequelize) => {
+  const User = sequelize.define("users", {
     email: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
     },
-    password: {
-      type: Sequelize.STRING,
+    username: {
+      type: DataTypes.STRING,
+    },
+    imageUrl: {
+      type: DataTypes.STRING,
+      defaultValue:
+        "https://images.pexels.com/photos/33684/astronaut-spacewalk-iss-tools.jpg",
     },
   });
 
   return User;
-}
+};

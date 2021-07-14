@@ -1,29 +1,31 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
-const Role = db.role;
-
-const Op = db.Sequelize.Op;
+const Login = db.login;
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
-  User.create({
-    username: req.body.username,
+  Login.create({
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
+    hash: bcrypt.hashSync(req.body.password, 8),
   })
-    .then((user) => {
-      const token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400,
-      });
+    .then((login) => {
+      User.create({
+        username: req.body.username,
+        email: req.body.email,
+      }).then((user) => {
+        const token = jwt.sign({ email: login.email }, config.secret, {
+          expiresIn: 86400,
+        });
 
-      res.status(200).send({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        accessToken: token,
+        res.status(200).send({
+          username: user.username,
+          email: user.email,
+          imageUrl: user.imageUrl,
+          accessToken: token,
+        });
       });
     })
     .catch((error) => {
@@ -32,20 +34,17 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  User.findOne({
+  Login.findOne({
     where: {
-      username: req.body.username,
+      email: req.body.email,
     },
   })
-    .then((user) => {
-      if (!user) {
+    .then((login) => {
+      if (!login) {
         return res.status(404).send({ message: "User Not Found." });
       }
 
-      const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+      const passwordIsValid = bcrypt.compareSync(req.body.password, login.hash);
 
       if (!passwordIsValid) {
         return res.status(401).send({
@@ -54,16 +53,26 @@ exports.signin = (req, res) => {
         });
       }
 
-      const token = jwt.sign({ id: user.id }, config.secret, {
+      const token = jwt.sign({ email: user.email }, config.secret, {
         expiresIn: 86400,
       });
 
-      res.status(200).send({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        accessToken: token,
-      });
+      User.findOne({
+        where: {
+          email: req.body.email,
+        },
+      })
+        .then((user) => {
+          res.status(200).send({
+            username: user.username,
+            email: user.email,
+            imageUrl: user.imageUrl,
+            accessToken: token,
+          });
+        })
+        .catch((error) => {
+          res.status(400).send({ message: error.message });
+        });
     })
     .catch((error) => res.status(500).send({ message: error.message }));
 };
