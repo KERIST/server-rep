@@ -53,9 +53,36 @@ exports.signin = (req, res) => {
         });
       }
 
-      const token = jwt.sign({ email: user.email }, config.secret, {
-        expiresIn: 86400,
-      });
+      let token;
+
+      switch (login.role) {
+        case 1:
+          token = jwt.sign({ email: user.email }, config.secret, {
+            expiresIn: 86400,
+          });
+          break;
+        case 2:
+          token = jwt.sign(
+            { email: user.email, isModerator: true },
+            config.secret,
+            {
+              expiresIn: 86400,
+            }
+          );
+          break;
+        case 3:
+          token = jwt.sign(
+            { email: user.email, isAdmin: true },
+            config.secret,
+            {
+              expiresIn: 86400,
+            }
+          );
+        default:
+          token = jwt.sign({ email: user.email }, config.secret, {
+            expiresIn: 86400,
+          });
+      };
 
       User.findOne({
         where: {

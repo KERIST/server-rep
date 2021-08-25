@@ -18,7 +18,9 @@ const getUserByEmail = (req, res) => {
 
 const updateUserPassword = (req, res) => {
   if (req.body.email !== req.userEmail) {
-    res.status(403).send({ message: "Permission is denided" });
+    return res.status(403).send({
+      message: "Permission denied!",
+    });
   }
 
   Login.findOne({
@@ -44,7 +46,29 @@ const updateUserPassword = (req, res) => {
     });
 };
 
+const createUser = (req, res) => {
+  Login.create({
+    email: req.body.email,
+    hash: bcrypt.hashSync(req.body.password, 8),
+    role: req.body.role,
+  })
+    .then(() => {
+      User.create({
+        username: req.body.username,
+        email: req.body.email,
+      }).then(() => {
+        res.status(200).send({
+          message: `User has been successfully created with role: ${req.body.role}`,
+        });
+      });
+    })
+    .catch((error) => {
+      res.status(500).send({ message: error.message });
+    });
+};
+
 module.exports = {
   getUserByEmail,
   updateUserPassword,
+  createUser,
 };

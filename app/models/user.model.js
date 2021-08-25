@@ -9,9 +9,11 @@ module.exports = (sequelize) => {
     },
     username: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     imageUrl: {
       type: DataTypes.STRING,
+      allowNull: false,
       defaultValue:
         "https://images.pexels.com/photos/33684/astronaut-spacewalk-iss-tools.jpg",
     },

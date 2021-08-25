@@ -18,17 +18,39 @@ const verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
+
     req.userEmail = decoded.email;
+    req.isModerator = decoded.isModerator || false;
+    req.isAdmin = decoded.isAdmin || false;
+
     next();
   });
 };
 
+const isModerator = (req, res, next) => {
+  if (!req.isModerator) {
+    return res.status(403).send({
+      message: "Permission denied!",
+    });
+  }
+
+  next();
+};
+
 const isAdmin = (req, res, next) => {
-  // TODO: Implemete next with table Admins
+  if (!req.isAdmin) {
+    return res.status(403).send({
+      message: "Permission denied!",
+    });
+  }
+
+  next();
 };
 
 const authJwt = {
   verifyToken,
+  isModerator,
+  isAdmin,
 };
 
 module.exports = authJwt;

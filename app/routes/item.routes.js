@@ -10,5 +10,7 @@ module.exports = (app) => {
     next();
   });
 
-  app.get("/api/item", controller.getItems);
+  app.get("/api/items/all", controller.getAllItems);
+  app.put("/api/items", [authJwt.verifyToken, authJwt.isModerator, authJwt.isAdmin], controller.addItems);
+  app.get("/api/items", controller.getItems);
 };

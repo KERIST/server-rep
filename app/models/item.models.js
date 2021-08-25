@@ -9,18 +9,23 @@ module.exports = (sequelize) => {
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     section: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     description: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     sizes: {
       type: DataTypes.JSON,
+      allowNull: false,
     },
     price: {
       type: DataTypes.INTEGER,
+      allowNull: false,
     },
   });
 
