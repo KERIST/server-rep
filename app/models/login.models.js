@@ -2,10 +2,15 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   const Login = sequelize.define("login", {
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+      primaryKey: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
     },
     hash: {
       type: DataTypes.STRING,

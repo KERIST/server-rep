@@ -1,5 +1,4 @@
 const db = require("../models");
-const config = require("../config/auth.config");
 const User = db.user;
 const Login = db.login;
 
@@ -16,7 +15,7 @@ exports.signup = (req, res) => {
         username: req.body.username,
         email: req.body.email,
       }).then((user) => {
-        const token = jwt.sign({ email: login.email }, config.secret, {
+        const token = jwt.sign({ email: login.email }, process.env.SECRET, {
           expiresIn: 86400,
         });
 
@@ -53,36 +52,9 @@ exports.signin = (req, res) => {
         });
       }
 
-      let token;
-
-      switch (login.role) {
-        case 1:
-          token = jwt.sign({ email: user.email }, config.secret, {
-            expiresIn: 86400,
-          });
-          break;
-        case 2:
-          token = jwt.sign(
-            { email: user.email, isModerator: true },
-            config.secret,
-            {
-              expiresIn: 86400,
-            }
-          );
-          break;
-        case 3:
-          token = jwt.sign(
-            { email: user.email, isAdmin: true },
-            config.secret,
-            {
-              expiresIn: 86400,
-            }
-          );
-        default:
-          token = jwt.sign({ email: user.email }, config.secret, {
-            expiresIn: 86400,
-          });
-      };
+      const token = jwt.sign({ email: user.email, role: login.role }, process.env.SECRET, {
+        expiresIn: 86400,
+      });
 
       User.findOne({
         where: {
