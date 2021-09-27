@@ -1,23 +1,38 @@
+const { handleDefault } = require("../utils/errorHandlers");
 const db = require("../models");
 const User = db.user;
 const Login = db.login;
 
-const getUserByEmail = (req, res) => {
-  User.findOne({
-    where: {
-      email: req.body.email,
-    },
-  }).then((user) => {
-    if (!user) {
-      res.status(404).send({ message: "User not found." });
-    }
+const getUserByEmail = async (req, res) => {
+  let user;
 
-    res.status(200).send(user);
-  });
+  try {
+    user = User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+  } catch (err) {
+    return handleDefault(err, res);
+  }
+
+  if (!user) {
+    res.status(404).send({ message: "User not found." });
+  }
+
+  res.status(200).send(user);
 };
 
-const updateUserPassword = (req, res) => {
-  if (req.body.email !== req.userEmail) {
+const updateUserPassword = async (req, res) => {
+  let login;
+
+  try {
+    login = await Login.findByPK(req.loginId);
+  } catch (err) {
+    return handleDefault(err, res);
+  }
+
+  if (login.email !== req.userEmail) {
     return res.status(403).send({
       message: "Permission denied!",
     });

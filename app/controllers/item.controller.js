@@ -1,41 +1,49 @@
+const { handleDefault } = require("../utils/errorHandlers");
 const { Op } = require("sequelize");
 const db = require("../models");
 const Item = db.item;
 
-const getAllItems = (req, res) => {
-  Item.findAll()
-    .then((items) => {
-      res.status(200).send(items);
-    })
-    .catch((error) => res.status(400).send({ message: error.message }));
+const getAllItems = async (req, res) => {
+  let items;
+
+  try {
+    items = await Item.findAll();
+  } catch (err) {
+    return handleDefault(err, res);
+  }
+
+  res.status(200).send(items);
 };
 
-const getItems = (req, res) => {
-  const {
-    params: { name },
-  } = req.body;
+const getItems = async (req, res) => {
+  let items;
 
-  Item.findAll({
-    where: {
-      name: {
-        [Op.like]: name,
+  try {
+    items = await Item.findAll({
+      where: {
+        name: {
+          [Op.like]: req.body.params.name,
+        },
       },
-    },
-  })
-    .then((item) => {
-      res.status(200).send(item);
-    })
-    .catch((error) => res.status(400).send({ message: error.message }));
+    });
+  } catch (err) {
+    return handleDefault(err, res);
+  }
+
+  res.status(200).send(items);
 };
 
-const addItems = (req, res) => {
-  const { items } = res.body;
+const addItems = async (req, res) => {
+  const { items } = req.body;
+  let dbRequstResult;
 
-  Item.create(items)
-    .then((items) => {
-      res.status(200).send(items);
-    })
-    .catch((error) => res.status(400).send({ message: error.message }));
+  try {
+    dbRequstResult = await Item.create(items);
+  } catch (err) {
+    return handleDefault(err, res);
+  }
+
+  res.status(200).send(dbRequstResult);
 };
 
 module.exports = {
