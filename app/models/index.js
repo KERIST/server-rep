@@ -10,12 +10,18 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.user = require("../models/user.model")(sequelize);
-db.login = require("../models/login.models")(sequelize);
-db.item = require("../models/item.models")(sequelize);
-db.directory = require("../models/directory.models")(sequelize);
+db.user = require("./user.model")(sequelize);
+db.login = require("./login.models")(sequelize);
+db.item = require("./item.models")(sequelize);
+db.directory = require("./directory.models")(sequelize);
+db.cart = require('./cart.models')(sequelize);
+db.reviews = require('./reviews.models')(sequelize);
 
-db.login.hasOne(db.user);
-db.user.belongsTo(db.login);
+db.login.hasOne(db.user, {onDelete: 'cascade'});
+db.user.belongsTo(db.login, {onDelete: 'cascade'});
+db.login.hasOne(db.cart, {onDelete: 'cascade'});
+db.cart.belongsTo(db.login);
+db.user.hasMany(db.reviews, {onDelete: 'cascade'});
+db.item.hasMany(db.reviews, {onDelete: 'cascade'});
 
 module.exports = db;
