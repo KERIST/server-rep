@@ -1,7 +1,7 @@
-const { handleDefault } = require("../utils/errorHandlers");
 const { Op } = require("sequelize");
-const db = require("../models");
-const Item = db.item;
+
+const { handleDefault } = require("../utils/errorHandlers");
+const { Item } = require("../models");
 
 const getAllItems = async (req, res) => {
   let items;

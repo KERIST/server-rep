@@ -1,7 +1,5 @@
-const db = require("../models");
+const { User, Login } = require("../models");
 const { handleDefault } = require("../utils/errorHandlers");
-const User = db.user;
-const Login = db.login;
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");

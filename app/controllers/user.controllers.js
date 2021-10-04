@@ -1,7 +1,5 @@
 const { handleDefault } = require("../utils/errorHandlers");
-const db = require("../models");
-const User = db.user;
-const Login = db.login;
+const { User, Login } = require("../models");
 
 const getUserByEmail = async (req, res) => {
   let user;
