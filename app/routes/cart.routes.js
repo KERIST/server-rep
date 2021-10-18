@@ -1,5 +1,5 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/user.controllers");
+const controller = require("../controllers/cart.controller");
 
 module.exports = (app) => {
   app.use((req, res, next) => {
@@ -10,6 +10,15 @@ module.exports = (app) => {
     next();
   });
 
-  app.get("/api/user", controller.getUserByEmail);
-  app.put("/api/user", [authJwt.verifyToken], controller.updateUserPassword);
+  app.put(
+    "/api/cart",
+    [authJwt.verifyToken],
+    controller.addItemToCart,
+  );
+
+  app.get(
+    "/api/cart",
+    [authJwt.verifyToken],
+    controller.getCartItems,
+  );
 };

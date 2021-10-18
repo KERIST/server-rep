@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require('./app/models');
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ }).then(() => {
   console.log('Drop and Resync DB');
 })
 
@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/item.routes')(app);
+require('./app/routes/review.routes')(app);
+require('./app/routes/cart.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 

@@ -16,20 +16,15 @@ const Item = require("./item.models")(sequelize);
 const Directory = require("./directory.models")(sequelize);
 const Cart = require("./cart.models")(sequelize);
 const Review = require("./review.models")(sequelize);
-const ItemReviews = require("./ItemReviews")(sequelize, Item, Review, Login);
-// TODO: Add Order table
 
 Login.hasOne(User, { onDelete: "cascade" });
 User.belongsTo(Login, { onDelete: "cascade" });
-Login.hasOne(Cart, { onDelete: "cascade" });
-Cart.belongsTo(Login);
+
 User.hasMany(Review, { onDelete: "cascade" });
 Item.hasMany(Review, { onDelete: "cascade" });
 
-Review.belongsToMany(Item, { through: ItemReviews });
-Review.belongsToMany(Login, { through: ItemReviews });
-Item.belongsToMany(Review, { through: ItemReviews, onDelete: "cascade" });
-Login.belongsToMany(Review, { through: ItemReviews, onDelete: "cascade" });
+Item.belongsToMany(Login, { through: Cart, onDelete: "cascade" });
+Login.belongsToMany(Item, { through: Cart, onDelete: "cascade" });
 
 module.exports = {
   sequelize,
@@ -39,5 +34,4 @@ module.exports = {
   Directory,
   Cart,
   Review,
-  ItemReviews,
 };

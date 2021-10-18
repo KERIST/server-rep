@@ -7,16 +7,6 @@ module.exports = (sequelize) => {
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
     },
-    items: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      get() {
-        return this.getDataValue('items').split(';');
-      },
-      set(val) {
-        return this.setDataValue('items', val.join(';'));
-      }
-    },
   });
 
   return Cart;
